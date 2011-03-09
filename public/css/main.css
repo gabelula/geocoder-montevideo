@@ -80,8 +80,9 @@ section {
 }
 
 #api-docs pre {
-  padding: 8px;
   margin: 8px 0;
+  padding: 8px;
+  width: 961px;
   background: #333;
   color: #eee;
   font-size: 14px;
