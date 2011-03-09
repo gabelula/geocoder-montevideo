@@ -74,6 +74,11 @@ section {
   content: " ";
 }
 
+#results .error {
+  color: #D94949;
+  text-shadow: 0 1px 0 #eee;
+}
+
 #api-docs pre {
   padding: 8px;
   margin: 8px 0;
