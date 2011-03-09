@@ -13,15 +13,28 @@ URL = ->(address, format="js") {
 }
 
 Cuba.define do
-  on get, path("geocode"), param("address") do |address|
-    data = JSON.parse(open(URL[address, "js"]).read)
+  on get, path("") do
+    res.redirect "/geocode"
+  end
 
-    if data["found"].nil? || data["found"] == 0
-      res.write "No results"
-    elsif data["found"] == 1
-      res.write "lat: #{data["bounds"][0][0]}; long: #{data["bounds"][0][1]}"
-    else
-      res.write "Multiple results"
+  on get, path("geocode"), param("address") do |address|
+    locals = { address:   "",
+               latitude:  "",
+               longitude: "",
+               results:   "" }
+
+    if address
+      data = JSON.parse(open(URL[address, "js"]).read)
+
+      locals[:address] = address
+      locals[:results] = data["found"]
+
+      if data["found"] == 1
+        locals[:latitude]  = data["bounds"][0][0]
+        locals[:longitude] = data["bounds"][0][1]
+      end
     end
+
+    res.write render("views/home.erb", locals)
   end
 end

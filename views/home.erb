@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Geocoding Montevideo</title>
+    <meta charset="utf8">
+  </head>
+  <body>
+    <h1>Geocoding Montevideo</h1>
+    <form action="/geocode" method="get">
+      <p><label for="address">Busca una dirección en Montevideo:</label></p>
+      <p>
+        <input type="text" name="address" id="address" value="<%= address %>">
+        <button type="submit">Buscar</button>
+      </p>
+    </form>
+
+    <% if results == 1 %>
+      <dl>
+        <dt>Latitude:</dt>
+        <dd><%= latitude %></dd>
+        <dt>Longitude:</dt>
+        <dd><%= longitude %></dd>
+      </dl>
+    <% end %>
+  </body>
+</html>
