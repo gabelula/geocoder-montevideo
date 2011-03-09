@@ -1,0 +1,84 @@
+body {
+  font: 16px/1.5 Helvetica, sans-serif;
+}
+
+h1 {
+  margin: 16px auto 32px;
+  width: 980px;
+  text-align: center;
+  font: 36px/1.2 Lobster, serif;
+  color: #22738f;
+  text-shadow: 1px 1px 0 #ccc;
+}
+
+section {
+  margin: 0 auto;
+  width: 980px;
+}
+
+#search {
+  margin-bottom: 32px;
+}
+
+#search p {
+  line-height: 1;
+}
+
+#search label {
+  color: #999;
+}
+
+#search input {
+  margin: 0;
+  border: 1px solid #ccc;
+  padding: 2px 6px;
+  height: 42px;
+  width: 854px;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f8f8f8), to(#f0f0f0));
+  background: -moz-linear-gradient(top, #f8f8f8 0%, #f0f0f0 100%);
+  font: 36px "Courier New", monospace;
+  color: #666;
+  text-shadow: 0 1px 0 #fff;
+}
+
+#search button {
+  position: relative;
+  top: 2px;
+  right: 3px;
+  margin: 0;
+  border: 0 none;
+  padding: 2px 26px;
+  height: 48px;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#BCD7E1), to(#87B1C0), color-stop(.5,#B5D2DC));
+  background: -moz-linear-gradient(top, #BCD7E1 0%, #B5D2DC 50%, #87B1C0 100%);
+  color: #22738f;
+  font: 18px Helvetica, sans-serif;
+  text-shadow: 0 1px 0 #fff;
+  cursor: pointer;
+}
+
+#results {
+  margin-bottom: 32px;
+}
+
+#results dt {
+  float: left;
+  clear: left;
+  width: 80px;
+  font-weight: bold;
+}
+
+#results dl:after {
+  clear: both;
+  display: block;
+  content: " ";
+}
+
+#api-docs pre {
+  padding: 8px;
+  margin: 8px 0;
+  background: #333;
+  color: #eee;
+  font-size: 14px;
+  line-height: 21px;;
+}

@@ -83,6 +83,8 @@ module Geocoder
   end
 end
 
+Cuba.use Rack::Static, root: "public", urls: ["/css", "/js"]
+
 Cuba.define do
   on get, path("") do
     res.redirect "/geocode"
