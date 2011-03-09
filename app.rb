@@ -3,7 +3,9 @@ require "cuba"
 require "json"
 require "open-uri"
 
-API_KEY = "f8c0606a56b441db908b280bcdc91d01";
+API_KEY = ENV["API_KEY"]
+
+abort "Please set an API_KEY environment variable with your CloudMade API key" if API_KEY.nil?
 
 module Geocoder
   URL = "http://geocoding.cloudmade.com/%s/geocoding/v2/find.js"
