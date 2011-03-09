@@ -1,11 +1,11 @@
 Geocoder Montevideo
--------------------
+===================
 
 This web app provides a very simple geocoder on top of CloudMade's API
 specifically aimed at Montevideo, Uruguay.
 
 Dependencies
-============
+------------
 
 This is built with [Cuba](http://github.com/soveran/cuba), so install that:
 
@@ -15,7 +15,7 @@ You need to have a CloudMade API key in order to run this. Sign up for free at
 http://cloudmade.com in order to get a key.
 
 Running
-=======
+-------
 
 To run, once you install `cuba`, do this:
 
@@ -24,14 +24,14 @@ To run, once you install `cuba`, do this:
 That should be all you need.
 
 Credits
-=======
+-------
 
 Huge thanks go to [Cubox](http://cuboxsa.com) for letting me work on this
 project, and to [CloudMade](http://cloudmade.com) for their awesome API and
 service.
 
 License
-=======
+-------
 
 Copyright (c) 2011 Nicolás Sanguinetti
 
