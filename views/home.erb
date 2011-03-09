@@ -6,6 +6,7 @@
   </head>
   <body>
     <h1>Geocoding Montevideo</h1>
+
     <form action="/geocode" method="get">
       <p><label for="address">Busca una dirección en Montevideo:</label></p>
       <p>
@@ -14,13 +15,15 @@
       </p>
     </form>
 
-    <% if results == 1 %>
+    <% if lat_long.exact_match? %>
       <dl>
         <dt>Latitude:</dt>
-        <dd><%= latitude %></dd>
+        <dd><%= lat_long.latitude %></dd>
         <dt>Longitude:</dt>
-        <dd><%= longitude %></dd>
+        <dd><%= lat_long.longitude %></dd>
       </dl>
+    <% elsif address.size > 0 %>
+      <p class="error">No exact match for "<%= address %>"</p>
     <% end %>
   </body>
 </html>
