@@ -22,7 +22,7 @@
         <dt>Longitude:</dt>
         <dd><%= lat_long.longitude %></dd>
       </dl>
-    <% elsif address.size > 0 %>
+    <% elsif address && address.size > 0 %>
       <p class="error">No exact match for "<%= address %>"</p>
     <% end %>
 
