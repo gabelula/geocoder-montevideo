@@ -107,7 +107,7 @@ footer a {
 }
 
 footer a:first-child {
-  padding-right: 12px;
+  padding-right: 16px;
   border-right: 1px solid #ccc;
 }
 
