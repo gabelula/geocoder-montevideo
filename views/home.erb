@@ -25,5 +25,22 @@
     <% elsif address.size > 0 %>
       <p class="error">No exact match for "<%= address %>"</p>
     <% end %>
+
+    <h2>API</h2>
+
+    <p>Accede a esta página con el header <code>Accept: application/json</code>
+      para obtener la respuesta en JSON</p>
+
+    <p>Por ejemplo:</p>
+    <pre>$ curl -H "Accept: application/json" -G "http://<%= env["HTTP_HOST"] %>/geocode?address=18+de+julio+1860
+{ "response_code": "200",
+  "latitude":      -34.90204,
+  "longitude":     -56.17594,
+  "address":"18 de julio 1860" }</pre>
+
+    <p>Cuando se encuentre la dirección en la base de datos el API retornará
+      <strong><code>response_code: 200</code></strong>. Si la dirección no se
+      encuentra, entonces se retornará <strong><code>response_code:
+      404</code></strong>
   </body>
 </html>
