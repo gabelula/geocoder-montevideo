@@ -17,7 +17,6 @@ module Geocoder
 
   def self.uri(address, api_key=API_KEY)
     URI.parse(URL % api_key).tap do |url|
-      puts Address.parse(address).to_uri
       url.query = "query=" + Address.parse(address).to_uri
     end
   end
