@@ -83,7 +83,7 @@ module Geocoder
   end
 end
 
-Cuba.use Rack::Static, root: "public", urls: ["/css", "/js"]
+Cuba.use Rack::Static, root: "public", urls: ["/css", "/js", "/img"]
 
 Cuba.define do
   on get, path("") do
