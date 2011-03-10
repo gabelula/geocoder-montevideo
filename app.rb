@@ -2,6 +2,7 @@ require "cgi"
 require "cuba"
 require "json"
 require "open-uri"
+require "yaml"
 
 API_KEY = ENV["API_KEY"]
 
@@ -10,6 +11,7 @@ abort "Please set an API_KEY environment variable with your CloudMade API key" i
 module Geocoder
   GEOCODE_URL = "http://geocoding.cloudmade.com/%s/geocoding/v2/find.js"
   MAP_URL     = "http://staticmaps.cloudmade.com/%s/staticmap"
+  STREETS     = YAML.load_file(File.expand_path("../data/streets.montevideo.yml", __FILE__))
 
   def self.find(address)
     lat_long = if address
@@ -116,5 +118,10 @@ Cuba.define do
     on default do
       res.write render("views/home.erb", response.to_hash)
     end
+  end
+
+  on get, path("streets.json") do
+    res["Content-Type"] = "application/json"
+    res.write JSON.dump(Geocoder::STREETS)
   end
 end
