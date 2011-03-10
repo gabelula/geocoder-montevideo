@@ -79,13 +79,30 @@ section {
   display: inline;
 }
 
-#results img#map {
-  margin-bottom: 16px
+#results .map {
+  margin-bottom: 0;
   border: 1px solid #ccc;
   background: #fff;
+  width: 977px;
+  height: 272px;
   box-shadow: 0 -2px 3px #eee, 2px 0 3px #eee, 0 2px 3px #eee, -2px 0 3px #eee;
   -webkit-box-shadow: 0 -2px 3px #eee, 2px 0 3px #eee, 0 2px 3px #eee, -2px 0 3px #eee;
   -moz-box-shadow: 0 -2px 3px #eee, 2px 0 3px #eee, 0 2px 3px #eee, -2px 0 3px #eee;
+}
+
+#results .toggle-map {
+  float: right;
+  margin-top: -1.5em;
+  color: #666;
+}
+
+#results .toggle-map:visited {
+  color: #666;
+}
+
+#results .toggle-map:active,
+#results .toggle-map:hover {
+  color: #999;
 }
 
 #results .error {

@@ -3,6 +3,7 @@
   <head>
     <title>Geocoding Montevideo</title>
     <meta charset="utf8">
+    <meta name="cloudmade-api-key" content="<%= API_KEY %>">
     <link href="http://fonts.googleapis.com/css?family=Arvo:bold&subset=latin" rel="stylesheet">
     <link href="/css/reset.css" rel="stylesheet">
     <link href="/css/main.css" rel="stylesheet">
@@ -31,7 +32,11 @@
           <dd><%= lat_long.longitude %>&deg;E</dd>
         </dl>
 
-        <img id="map" src="<%= Geocoder.map(lat_long.latitude, lat_long.longitude) %>" width="977" height="272">
+        <img id="static-map" class="map"
+          src="<%= Geocoder.map(lat_long.latitude, lat_long.longitude) %>"
+          data-latitude="<%= lat_long.latitude %>"
+          data-longitude="<%= lat_long.longitude %>"
+          data-address="<%= address %>">
       <% elsif address && address.size > 0 %>
         <p class="error">No encontramos la dirección "<%= address %>".</p>
       <% end %>
@@ -61,5 +66,11 @@
         <a href="http://cloudmade.com"><img src="/img/cloudmade.png" width="40" height="40"><span> provee los datos</span></a>
       </address>
     </footer>
+
+    <% if lat_long.exact_match? %>
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+      <script src="http://tile.cloudmade.com/wml/0.2/web-maps-lite.js"></script>
+      <script src="/js/interactiveMap.js"></script>
+    <% end %>
   </body>
 </html>
