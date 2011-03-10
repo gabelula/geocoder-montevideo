@@ -30,6 +30,8 @@
           <dt>Longitud:</dt>
           <dd><%= lat_long.longitude %>&deg;E</dd>
         </dl>
+
+        <img src="<%= Geocoder.map(lat_long.latitude, lat_long.longitude) %>" width="980" height="272">
       <% elsif address && address.size > 0 %>
         <p class="error">No encontramos la dirección "<%= address %>".</p>
       <% end %>

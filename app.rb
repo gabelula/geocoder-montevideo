@@ -8,7 +8,8 @@ API_KEY = ENV["API_KEY"]
 abort "Please set an API_KEY environment variable with your CloudMade API key" if API_KEY.nil?
 
 module Geocoder
-  URL = "http://geocoding.cloudmade.com/%s/geocoding/v2/find.js"
+  GEOCODE_URL = "http://geocoding.cloudmade.com/%s/geocoding/v2/find.js"
+  MAP_URL     = "http://staticmaps.cloudmade.com/%s/staticmap"
 
   def self.find(address)
     lat_long = address ? LatLong.new(JSON.parse(open(uri(address)).read)) : LatLong.new
@@ -16,9 +17,18 @@ module Geocoder
   end
 
   def self.uri(address, api_key=API_KEY)
-    URI.parse(URL % api_key).tap do |url|
+    URI.parse(GEOCODE_URL % api_key).tap do |url|
       url.query = "query=" + Address.parse(address).to_uri
     end
+  end
+
+  def self.map(latitude, longitude, host=env["HTTP_HOST"], api_key=API_KEY)
+    (MAP_URL % api_key) + "?" + [
+      "center=#{latitude},#{longitude}",
+      "size=977x272",
+      "zoom=16",
+      "marker=url:http://#{host}/img/marker.png|#{latitude},#{longitude}"
+    ].join("&")
   end
 
   class Address < Struct.new(:street, :house, :city, :country)
