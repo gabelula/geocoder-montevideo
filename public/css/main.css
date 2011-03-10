@@ -62,16 +62,22 @@ section {
 }
 
 #results dt {
-  float: left;
-  clear: left;
-  width: 80px;
   font-weight: bold;
 }
 
-#results dl:after {
-  clear: both;
-  display: block;
-  content: " ";
+#results dd {
+  margin-right: 12px;
+}
+
+#results dt, #results dd {
+  display: inline;
+}
+
+#results img#map {
+  border: 1px solid #ccc;
+  box-shadow: 0 -2px 3px #eee, 2px 0 3px #eee, 0 2px 3px #eee, -2px 0 3px #eee;
+  -webkit-box-shadow: 0 -2px 3px #eee, 2px 0 3px #eee, 0 2px 3px #eee, -2px 0 3px #eee;
+  -moz-box-shadow: 0 -2px 3px #eee, 2px 0 3px #eee, 0 2px 3px #eee, -2px 0 3px #eee;
 }
 
 #results .error {
@@ -84,6 +90,9 @@ section {
   padding: 8px;
   width: 961px;
   background: #333;
+  box-shadow: 0 -2px 3px #eee, 2px 0 3px #eee, 0 2px 3px #eee, -2px 0 3px #eee;
+  -webkit-box-shadow: 0 -2px 3px #eee, 2px 0 3px #eee, 0 2px 3px #eee, -2px 0 3px #eee;
+  -moz-box-shadow: 0 -2px 3px #eee, 2px 0 3px #eee, 0 2px 3px #eee, -2px 0 3px #eee;
   color: #eee;
   font-size: 14px;
   line-height: 21px;;
