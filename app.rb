@@ -22,12 +22,12 @@ module Geocoder
     end
   end
 
-  def self.map(latitude, longitude, marker_http_host, api_key=API_KEY)
+  def self.map(latitude, longitude, api_key=API_KEY)
     (MAP_URL % api_key) + "?" + [
       "center=#{latitude},#{longitude}",
       "size=977x272",
       "zoom=16",
-      "marker=url:http://#{marker_http_host}/img/marker.png|#{latitude},#{longitude}"
+      "marker=url:http://tile.cloudmade.com/wml/0.2/images/marker.png|#{latitude},#{longitude}"
     ].join("&")
   end
 
