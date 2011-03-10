@@ -10,7 +10,9 @@ h1 {
   margin: 16px auto 32px;
   width: 980px;
   text-align: center;
-  font: 36px/38px Lobster, serif;
+  font: 36px/38px Arvo, serif;
+  font-weight: 700;
+  word-spacing: 0.1em;
   color: #22738f;
   text-shadow: 1px 1px 0 #ccc;
 }
