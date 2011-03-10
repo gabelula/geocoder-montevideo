@@ -1,3 +1,7 @@
+html {
+  background: #fcfdfe url(/img/background.png) 0 16px;
+}
+
 body {
   font: 16px/1.5 Helvetica, sans-serif;
 }
@@ -6,7 +10,7 @@ h1 {
   margin: 16px auto 32px;
   width: 980px;
   text-align: center;
-  font: 36px/1.2 Lobster, serif;
+  font: 36px/38px Lobster, serif;
   color: #22738f;
   text-shadow: 1px 1px 0 #ccc;
 }
@@ -74,7 +78,9 @@ section {
 }
 
 #results img#map {
+  margin-bottom: 16px
   border: 1px solid #ccc;
+  background: #fff;
   box-shadow: 0 -2px 3px #eee, 2px 0 3px #eee, 0 2px 3px #eee, -2px 0 3px #eee;
   -webkit-box-shadow: 0 -2px 3px #eee, 2px 0 3px #eee, 0 2px 3px #eee, -2px 0 3px #eee;
   -moz-box-shadow: 0 -2px 3px #eee, 2px 0 3px #eee, 0 2px 3px #eee, -2px 0 3px #eee;
