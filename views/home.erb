@@ -45,19 +45,21 @@
     <section id="api-docs">
       <h2>Herramientas para desarrolladores</h2>
 
-      <p>Accede a esta página con el header <code>Accept: application/json</code>
-        para obtener la respuesta en JSON. Por ejemplo:</p>
+      <div>
+        <p>Accede a esta página con el header <code>Accept: application/json</code>
+          para obtener la respuesta en JSON. Por ejemplo:</p>
 
-      <pre>$ curl -H "Accept: application/json" -G "http://<%= env["HTTP_HOST"] %>/geocode?address=18+de+julio+1860"
-  { "response_code": "200",
-    "latitude":      -34.90204,
-    "longitude":     -56.17594,
-    "address":       "18 de julio 1860" }</pre>
+        <pre>$ curl -H "Accept: application/json" -G "http://<%= env["HTTP_HOST"] %>/geocode?address=18+de+julio+1860"
+    { "response_code": "200",
+      "latitude":      -34.90204,
+      "longitude":     -56.17594,
+      "address":       "18 de julio 1860" }</pre>
 
-      <p>Cuando se encuentre la dirección en la base de datos el API retornará
-        <strong><code>response_code: 200</code></strong>. Si la dirección no se
-        encuentra, entonces se retornará <strong><code>response_code:
-        404</code></strong>
+        <p>Cuando se encuentre la dirección en la base de datos el API retornará
+          <strong><code>response_code: 200</code></strong>. Si la dirección no se
+          encuentra, entonces se retornará <strong><code>response_code:
+          404</code></strong>
+      </div>
     </section>
 
     <footer>
@@ -70,8 +72,7 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
     <script>
       jQuery(function($) {
-        var apiDocs = $("#api-docs *").not("h2");
-        apiDocs.hide();
+        var apiDocs = $("#api-docs h2 + *").hide();
         $("#api-docs h2").css({ cursor: "pointer", textDecoration: "underline" }).click(function() {
           apiDocs.toggle();
         });
@@ -97,8 +98,6 @@
           var map = new CM.Map('dynamic-map', new CM.Tiles.CloudMade.Web({ key: CLOUDMADE_API_KEY })),
               mapLocation = new CM.LatLng(latitude, longitude),
               marker = new CM.Marker(mapLocation, { title: address });
-
-          window.map = map;
 
           map.setCenter(mapLocation, 16);
           map.addOverlay(marker);
