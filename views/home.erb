@@ -17,7 +17,7 @@
       <form action="/geocode" method="get">
         <p><label for="address">Busca una dirección en Montevideo:</label></p>
         <p>
-          <input autofocus type="text" name="address" id="address" value="<%= address %>">
+          <input autofocus autocomplete="off" type="text" name="address" id="address" value="<%= address %>">
           <button type="submit">Buscar</button>
         </p>
       </form>
@@ -70,12 +70,16 @@
     </footer>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+    <script src="/js/jquery.autocomplete.js"></script>
     <script>
       jQuery(function($) {
+        $("#address").autocomplete("/streets.txt");
+
         var apiDocs = $("#api-docs h2 + *").hide();
         $("#api-docs h2").css({ cursor: "pointer", textDecoration: "underline" }).click(function() {
           apiDocs.toggle();
         });
+
       });
     </script>
 

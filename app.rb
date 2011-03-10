@@ -2,6 +2,7 @@ require "cgi"
 require "cuba"
 require "json"
 require "open-uri"
+require "text"
 require "yaml"
 
 API_KEY = ENV["API_KEY"]
@@ -41,8 +42,12 @@ module Geocoder
 
   class Address < Struct.new(:street, :house, :city, :country)
     def self.parse(address)
-      address =~ /(.+)\s(\d+.+)/
-      new($1, $2, "Montevideo", "Uruguay")
+      # we revert it and revert it back so we can safely extract the
+      # house number first, and then everything else is the street name
+      address.reverse =~ /^(?:((?:sib|[ab]p|[a-d])?\s*\d+)?\s+)?(.+)$/
+      street, number = [$2 && $2.reverse, $1 && $1.reverse]
+
+      new(street, number, "Montevideo", "Uruguay")
     end
 
     def to_uri
@@ -99,6 +104,36 @@ module Geocoder
       { address: address, lat_long: lat_long }
     end
   end
+
+  class StreetComparer
+    attr :term
+    attr :streets
+
+    def initialize(term, streets=STREETS)
+      @term = sanitize(term)
+      @streets = streets
+    end
+
+    def matches
+      term_sounds_like = term.map { |word| sounds(word) }.flatten.compact
+      scored = streets.map do |street|
+        street_sounds_like = sanitize(street).map { |word| sounds(word) }.flatten.compact
+        [street, (street_sounds_like & term_sounds_like).size]
+      end
+
+      scored.sort {|a,b| b.last <=> a.last }.first(7).map(&:first)
+    end
+
+    private
+
+    def sanitize(street)
+      street.strip.split(/\s+/)
+    end
+
+    def sounds(word)
+      Text::Metaphone.double_metaphone(word)
+    end
+  end
 end
 
 Cuba.use Rack::Static, root: "public", urls: ["/css", "/js", "/img"]
@@ -120,8 +155,11 @@ Cuba.define do
     end
   end
 
-  on get, path("streets.json") do
-    res["Content-Type"] = "application/json"
-    res.write JSON.dump(Geocoder::STREETS)
+  on get, path("streets.txt"), param("q") do |search|
+    street = Geocoder::Address.parse(search).street
+    comparer = Geocoder::StreetComparer.new(street)
+
+    res["Content-Type"] = "text/plain"
+    res.write comparer.matches.join("\n")
   end
 end

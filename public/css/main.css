@@ -63,6 +63,22 @@ section {
   cursor: pointer;
 }
 
+.ac_results {
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f8f8f8), to(#f0f0f0));
+  background: -moz-linear-gradient(top, #f8f8f8 0%, #f0f0f0 100%);
+  width: 868px !important;
+}
+
+.ac_results .ac_over {
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#BCD7E1), to(#87B1C0), color-stop(.5,#B5D2DC));
+  background: -moz-linear-gradient(top, #BCD7E1 0%, #B5D2DC 50%, #87B1C0 100%);
+}
+
+.ac_results li {
+  padding-left: 10px;
+  padding-right: 6px;
+}
+
 #results {
   margin-bottom: 32px;
 }
