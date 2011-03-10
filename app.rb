@@ -12,11 +12,17 @@ module Geocoder
   MAP_URL     = "http://staticmaps.cloudmade.com/%s/staticmap"
 
   def self.find(address)
-    lat_long = address ? LatLong.new(JSON.parse(open(uri(address)).read)) : LatLong.new
+    lat_long = if address
+      data = JSON.parse(open(address_uri(address)).read)
+      LatLong.new(data)
+    else
+      LatLong.new
+    end
+
     Response.new(address, lat_long)
   end
 
-  def self.uri(address, api_key=API_KEY)
+  def self.address_uri(address, api_key=API_KEY)
     URI.parse(GEOCODE_URL % api_key).tap do |url|
       url.query = "query=" + Address.parse(address).to_uri
     end
