@@ -24,6 +24,11 @@ module Geocoder
     Response.new(address, lat_long)
   end
 
+  def self.draw(address, latitude, longitude)
+    lat_long = LatLong::Pair.new(latitude, longitude)
+    Response.new(address, lat_long)
+  end
+
   def self.address_uri(address, api_key=API_KEY)
     URI.parse(GEOCODE_URL % api_key).tap do |url|
       url.query = "query=" + Address.parse(address).to_uri
@@ -117,6 +122,19 @@ module Geocoder
     def exact_match?
       data && data["bounds"][0] == data["bounds"][1]
     end
+
+    class Pair < LatLong
+      attr :latitude
+      attr :longitude
+
+      def initialize(lat, lng)
+        @latitude, @longitude = lat, lng
+      end
+
+      def exact_match?
+        true
+      end
+    end
   end
 
   class Response
@@ -180,8 +198,12 @@ Cuba.define do
     res.redirect "/geocode"
   end
 
-  on get, path("geocode"), param("address") do |address|
-    response = Geocoder.find(address)
+  on get, path("geocode"), param("address"), param("lat"), param("lng") do |address, lat, lng|
+    if lat && lng
+      response = Geocoder.draw(address, lat, lng)
+    else
+      response = Geocoder.find(address)
+    end
 
     on accept("application/json") do
       res.write response.to_json
