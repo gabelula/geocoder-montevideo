@@ -11,7 +11,6 @@ end
 
 module Geocoder
   GEOCODE_URL = "http://geocoding.cloudmade.com/%s/geocoding/v2/find.js"
-  MAP_URL     = "http://staticmaps.cloudmade.com/%s/staticmap"
   STREETS     = YAML.load_file(File.expand_path("../data/streets.montevideo.yml", __FILE__))
 
   def self.find(address)
@@ -31,13 +30,41 @@ module Geocoder
     end
   end
 
-  def self.map(latitude, longitude, api_key=API_KEY)
-    (MAP_URL % api_key) + "?" + [
-      "center=#{latitude},#{longitude}",
-      "size=977x272",
-      "zoom=16",
-      "marker=url:http://tile.cloudmade.com/wml/0.2/images/marker.png|#{latitude},#{longitude}"
-    ].join("&")
+  def self.map(latitude, longitude, size, zoom=16, api_key=API_KEY)
+    Map.new(latitude, longitude, size, zoom, api_key).to_uri
+  end
+
+  class Map < Struct.new(:latitude, :longitude, :size, :zoom, :api_key)
+    URL    = "http://staticmaps.cloudmade.com/%s/staticmap"
+    MARKER = "http://tile.cloudmade.com/wml/0.2/images/marker.png"
+
+    def center
+      CGI.escape("#{latitude},#{longitude}")
+    end
+
+    def size
+      user_size = super.to_s.split("x").map(&:to_i)
+      user_size = user_size.map { |dim| [dim.abs, 1600].min }
+      user_size = user_size.size == 1 ? user_size * 2 : user_size
+      user_size.join("x")
+    end
+
+    def zoom
+      [1, [18, super.to_i].min].max.to_s
+    end
+
+    def marker
+      CGI.escape("url:#{MARKER}|#{latitude},#{longitude}")
+    end
+
+    def to_uri
+      (URL % api_key) + "?" + [
+        "center=#{center}",
+        "size=#{size}",
+        "zoom=#{zoom}",
+        "marker=#{marker}"
+      ].join("&")
+    end
   end
 
   class Address < Struct.new(:street, :house, :city, :country)
@@ -81,6 +108,10 @@ module Geocoder
       else
         { response_code: "404" }
       end
+    end
+
+    def to_a
+      [latitude, longitude]
     end
 
     def exact_match?
@@ -136,6 +167,12 @@ module Geocoder
   end
 end
 
+class Cuba::Ron
+  def link(text, url=text)
+    %Q(<a href="#{url}">#{text}</a>)
+  end
+end
+
 Cuba.use Rack::Static, root: "public", urls: ["/css", "/js", "/img"]
 
 Cuba.define do
@@ -148,6 +185,14 @@ Cuba.define do
 
     on accept("application/json") do
       res.write response.to_json
+    end
+
+    on path("map.png"), param("size"), param("zoom") do |size, zoom|
+      lat, lng = response.lat_long.to_a
+      map = open(Geocoder.map(lat, lng, size || "400x300", zoom || 16))
+
+      res["Content-Type"] = "image/png"
+      res.write map.read
     end
 
     on default do

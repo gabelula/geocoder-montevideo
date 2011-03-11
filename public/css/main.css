@@ -22,6 +22,14 @@ section {
   width: 980px;
 }
 
+a:link, a:visited {
+  color: #666;
+}
+
+a:hover, a:active {
+  color: #999;
+}
+
 #search {
   margin-bottom: 32px;
 }
@@ -109,16 +117,6 @@ section {
 #results .toggle-map {
   float: right;
   margin-top: -1.5em;
-  color: #666;
-}
-
-#results .toggle-map:visited {
-  color: #666;
-}
-
-#results .toggle-map:active,
-#results .toggle-map:hover {
-  color: #999;
 }
 
 #results .error {
@@ -137,6 +135,37 @@ section {
   color: #eee;
   font-size: 14px;
   line-height: 21px;;
+}
+
+#api-docs h3 {
+  margin-top: 24px;
+}
+
+#api-docs .overview {
+  margin-bottom: 24px;
+}
+
+#api-docs dl {
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+#api-docs dl:after {
+  display: block;
+  clear: both;
+  content: " ";
+}
+
+#api-docs dt {
+  float: left;
+  clear: left;
+  margin-top: 8px;
+  margin-right: 16px;
+}
+
+#api-docs dd {
+  float: left;
+  margin-top: 8px;
 }
 
 footer {
