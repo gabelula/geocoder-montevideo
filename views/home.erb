@@ -61,21 +61,51 @@
         <p>Accede a esta página con el header <code>Accept: application/json</code>
           para obtener la respuesta en JSON. Por ejemplo:</p>
 
-        <pre>$ curl -H "Accept: application/json" -G "http://<%= env["HTTP_HOST"] %>/geocode?address=18+de+julio+1860"
-    { "response_code": "200",
-      "latitude":      -34.90204,
-      "longitude":     -56.17594,
-      "address":       "18 de julio 1860" }</pre>
+        <pre>$ curl -H "Accept: application/json" -G "http://<%= env["HTTP_HOST"] %>/geocode?address=Juan+Carlos+Gómez+1362"
+  {
+    "response_code": "200",
+    "results": [{
+      "latitude":      -34.9066,
+      "longitude":     -56.20291,
+      "addresses":     ["Juan Carlos Gómez 1362"]
+    }]
+  }</pre>
 
         <p>Cuando se encuentre la dirección en la base de datos el API retornará
           <strong><code>response_code: 200</code></strong>. Si la dirección no se
           encuentra, entonces se retornará <strong><code>response_code:
-          404</code></strong>
+          404</code></strong> (y una lista vacía de <code>results</code>.)</p>
+
+        <p>La lista <code>addresses</code> contiene un listado de todos los
+          padrones cuyo centroide se situe en esas coordenadas.</p>
+
+        <p>Si los datos son ambiguos, y se encuentran muchos puntos con una dirección
+          similar a la provista, se retornará <strong><code>response_code: 300</code></strong>,
+          y varios valores en la lista <code>results</code>. Por ejemplo:</p>
+
+        <pre>$ curl -H "Accept: application/json" -G "http://<%= env["HTTP_HOST"] %>/geocode?address=18+de+julio+1360"
+  {
+    "response_code": "300",
+    "results": [{
+      "latitude":  -34.90282,
+      "longitude": -56.1869,
+      "addresses": ["Avenida Uruguay 1360", "Avenida Uruguay 1364"]
+    }, {
+      "latitude":  -34.9057,
+      "longitude": -56.18617,
+      "addresses": ["Avenida 18 de Julio 1360", "Avenida 18 de Julio 1374", "Avenida 18 de Julio 1384"]
+    }]
+  }</pre>
 
         <h3>Mapas Embebibles</h3>
 
-        <p class="overview">Accede a la URL <code><%= link "http://#{env["HTTP_HOST"]}/geocode/map.png?address=18+de+julio+1860" %></code>
+        <p class="overview">Accede a la URL <code><%= link "http://#{env["HTTP_HOST"]}/geocode?address=Juan+Carlos+Gómez+1362" %></code>
           para obtener el mapa como imagen estática.</p>
+
+        <p>Si la dirección es ambigua (<code>response_code: 300</code> en el API
+          JSON) se retornará un cuerpo vacío con un código HTTP 300. Si la dirección
+          no se encuentra en la base de datos, se retornará un cuerpo vacío con
+          un código HTTP 404.</p>
 
         <p>Puedes configurar el mapa con los siguientes parámetros en la URL:</p>
         <dl>
@@ -84,14 +114,14 @@
             <p>Una cadena de la forma <code>ANCHOxLARGO</code>, por ejemplo <code>size=500x600</code>.</p>
             <p>Si solo especificas un valor, la imagen será cuadrada:
               <code>size=340</code></p>
-            <p>Ejemplo: <code><%= link "http://#{env["HTTP_HOST"]}/geocode/map.png?address=18+de+julio+1860&size=500x600" %></code></p>
+            <p>Ejemplo: <code><%= link "http://#{env["HTTP_HOST"]}/geocode/map.png?address=Juan+Carlos+Gómez+1362&size=500x600" %></code></p>
             <p><em>Valor por omisión:</em> <code>400x300</code></p>
           </dd>
 
           <dt><code>zoom</code></dt>
           <dd>
             <p>Un número entre <code>1</code> y <code>18</code>, por ejemplo <code>zoom=13</code>.</p>
-            <p>Ejemplo: <code><%= link "http://#{env["HTTP_HOST"]}/geocode/map.png?address=18+de+julio+1860&zoom=13" %></code></p>
+            <p>Ejemplo: <code><%= link "http://#{env["HTTP_HOST"]}/geocode/map.png?address=Juan+Carlos+Gómez+1362&zoom=13" %></code></p>
             <p><em>Valor por omisión:</em> <code>16</code></p>
           </dd>
         </dl>

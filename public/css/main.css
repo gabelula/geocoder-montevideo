@@ -178,6 +178,10 @@ a:hover, a:active {
   margin-bottom: 24px;
 }
 
+#api-docs p {
+  margin-bottom: 8px;
+}
+
 #api-docs dl {
   margin-top: 8px;
   margin-bottom: 16px;
@@ -199,6 +203,10 @@ a:hover, a:active {
 #api-docs dd {
   float: left;
   margin-top: 8px;
+}
+
+#api-docs dd p {
+  margin-bottom: 0;
 }
 
 footer {
