@@ -14,19 +14,13 @@ module Geocoder
   STREETS     = YAML.load_file(File.expand_path("../data/streets.montevideo.yml", __FILE__))
 
   def self.find(address)
-    lat_long = if address
-      data = JSON.parse(open(address_uri(address)).read)
-      LatLong.new(data)
-    else
-      LatLong.new
-    end
-
-    Response.new(address, lat_long)
+    ResultSet.new(
+      address && JSON.parse(open(address_uri(address), "r:ASCII-8BIT").read)
+    )
   end
 
   def self.draw(address, latitude, longitude)
-    lat_long = LatLong::Pair.new(latitude, longitude)
-    Response.new(address, lat_long)
+    ResultSet.static(Coords.new(latitude, longitude, Address.parse(address)))
   end
 
   def self.address_uri(address, api_key=API_KEY)
@@ -72,14 +66,30 @@ module Geocoder
     end
   end
 
-  class Address < Struct.new(:street, :house, :city, :country)
+  class Address
+    attr :street
+    attr :house
+    attr :city
+    attr :country
+
     def self.parse(address)
       # we revert it and revert it back so we can safely extract the
       # house number first, and then everything else is the street name
       address.reverse =~ /^(?:((?:sib|[ab]p|[a-d])?\s*\d+)?\s+)?(.+)$/
       street, number = [$2 && $2.reverse, $1 && $1.reverse]
 
-      new(street, number, "Montevideo", "Uruguay")
+      new(street, number)
+    end
+
+    def initialize(street, house, city="Montevideo", country="Uruguay")
+      @street  = street
+      @house   = house
+      @city    = city
+      @country = country
+    end
+
+    def to_s
+      "#{street} #{house}"
     end
 
     def to_uri
@@ -90,67 +100,106 @@ module Geocoder
     end
   end
 
-  class LatLong
+  class Coords
+    attr :latitude
+    attr :longitude
+    attr :addresses
+
+    def initialize(latitude, longitude, addresses)
+      @latitude  = latitude
+      @longitude = longitude
+      @addresses = Array(addresses)
+    end
+
+    def multi?
+      addresses.size > 1
+    end
+
+    def address
+      addresses.first
+    end
+
+    def to_hash
+      { latitude:  latitude,
+        longitude: longitude,
+        addresses: addresses.map(&:to_s) }
+    end
+  end
+
+  class ResultSet
     attr :data
+
+    def self.static(coords)
+      new.tap do |set|
+        set.coords.concat Array(coords)
+      end
+    end
 
     def initialize(data=nil)
       @data = data
     end
 
-    def latitude
-      exact_match? && data["bounds"][0][0]
-    end
-
-    def longitude
-      exact_match? && data["bounds"][0][1]
-    end
-
     def to_hash
-      if exact_match?
-        { response_code: "200",
-          latitude:      latitude,
-          longitude:     longitude }
-      else
-        { response_code: "404" }
+      status = case coords.size
+        when 0; "404"
+        when 1; "200"
+        else    "300"
       end
-    end
 
-    def to_a
-      [latitude, longitude]
+      { response_code: status, results: coords.map(&:to_hash) }
     end
 
     def exact_match?
-      data && data["bounds"][0] == data["bounds"][1]
+      coords.size == 1
     end
 
-    class Pair < LatLong
-      attr :latitude
-      attr :longitude
+    def empty?
+      coords.empty?
+    end
 
-      def initialize(lat, lng)
-        @latitude, @longitude = lat, lng
+    def any?
+      coords.any?
+    end
+
+    def each(&blk)
+      coords.each(&blk)
+    end
+
+    def latitude
+      raise "Too many choices" unless exact_match?
+      coords.first.latitude
+    end
+
+    def longitude
+      raise "Too many choices" unless exact_match?
+      coords.first.longitude
+    end
+
+    def expanded
+      expanded_coords = coords.map do |coord|
+        coord.addresses.map do |address|
+          Coords.new(coord.latitude, coord.longitude, [address])
+        end
       end
 
-      def exact_match?
-        true
+      ResultSet.static(expanded_coords.flatten)
+    end
+
+    def coords
+      @coords ||= begin
+        raw = data ? data["features"] : []
+        raw.map do |feature|
+          addresses = feature["properties"].fetch("addr:housenumber").split(",").map do |house|
+            Address.new(feature["properties"]["addr:street"], house)
+          end
+
+          Coords.new(
+            feature["centroid"]["coordinates"].first,
+            feature["centroid"]["coordinates"].last,
+            addresses
+          )
+        end
       end
-    end
-  end
-
-  class Response
-    attr :address
-    attr :lat_long
-
-    def initialize(address, lat_long)
-      @address, @lat_long = address, lat_long
-    end
-
-    def to_json
-      JSON.dump(lat_long.to_hash.merge(address: address))
-    end
-
-    def to_hash
-      { address: address, lat_long: lat_long }
     end
   end
 
@@ -187,7 +236,15 @@ end
 
 class Cuba::Ron
   def link(text, url=text)
-    %Q(<a href="#{url}">#{text}</a>)
+    %Q(<a href="#{url}">#{text}</a>).force_encoding("ASCII-8BIT")
+  end
+
+  def address_url(coord)
+    "/geocode?" + [
+      "address=#{CGI.escape(coord.address.to_s)}",
+      "lat=#{CGI.escape(coord.latitude.to_s)}",
+      "lng=#{CGI.escape(coord.longitude.to_s)}"
+    ].join("&").force_encoding("ASCII-8BIT")
   end
 end
 
@@ -200,25 +257,29 @@ Cuba.define do
 
   on get, path("geocode"), param("address"), param("lat"), param("lng") do |address, lat, lng|
     if lat && lng
-      response = Geocoder.draw(address, lat, lng)
+      result_set = Geocoder.draw(address, lat, lng)
     else
-      response = Geocoder.find(address)
+      result_set = Geocoder.find(address)
     end
 
     on accept("application/json") do
-      res.write response.to_json
+      res.write JSON.dump(result_set.to_hash)
     end
 
     on path("map.png"), param("size"), param("zoom") do |size, zoom|
-      lat, lng = response.lat_long.to_a
-      map = open(Geocoder.map(lat, lng, size || "400x300", zoom || 16))
-
-      res["Content-Type"] = "image/png"
-      res.write map.read
+      if result_set.exact_match?
+        map = open(Geocoder.map(result_set.latitude, result_set.longitude, size || "400x300", zoom || 16))
+        res["Content-Type"] = "image/png"
+        res.write map.read
+      elsif result_set.any?
+        res.status = 300
+      else
+        res.status = 404
+      end
     end
 
     on default do
-      res.write render("views/home.erb", response.to_hash)
+      res.write render("views/home.erb", results: result_set, address: address)
     end
   end
 

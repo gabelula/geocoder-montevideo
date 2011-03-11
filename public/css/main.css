@@ -136,6 +136,27 @@ a:hover, a:active {
   text-shadow: 0 1px 0 #eee;
 }
 
+#results #multiple-choices {
+  list-style-type: none;
+}
+
+#results #multiple-choices li {
+  margin-left: 4px;
+}
+
+#results #multiple-choices li:before {
+  content: "-";
+  margin-right: 4px;
+}
+
+#results #multiple-choices li a:link, #results #multiple-choices li a:visited {
+  color: #b72727;
+}
+
+#results #multiple-choices li a:hover, #results #multiple-choices li a:active {
+  color: #D94949;
+}
+
 #api-docs pre {
   margin: 8px 0;
   padding: 8px;
