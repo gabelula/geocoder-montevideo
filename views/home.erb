@@ -101,10 +101,18 @@
     <script src="/js/jquery-ui.autocomplete.js"></script>
     <script>
       jQuery(function($) {
-        $("#address").autocomplete({
+        var address = $("#address");
+
+        address.autocomplete({
           source:    "/streets.json",
           minLength: 2,
           delay:     200
+        });
+        address.ajaxStart(function() { $(this).addClass("loading") });
+        address.ajaxStop(function() { $(this).removeClass("loading") });
+
+        $("#search form").submit(function() {
+          address.addClass("loading");
         });
 
         var apiDocs = $("#api-docs h2 + *").hide();
