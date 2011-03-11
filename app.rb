@@ -5,9 +5,9 @@ require "open-uri"
 require "text"
 require "yaml"
 
-API_KEY = ENV["API_KEY"]
-
-abort "Please set an API_KEY environment variable with your CloudMade API key" if API_KEY.nil?
+API_KEY = ENV.fetch("API_KEY") do
+  abort "Please set an API_KEY environment variable with your CloudMade API key"
+end
 
 module Geocoder
   GEOCODE_URL = "http://geocoding.cloudmade.com/%s/geocoding/v2/find.js"
