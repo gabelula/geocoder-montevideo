@@ -71,20 +71,25 @@ a:hover, a:active {
   cursor: pointer;
 }
 
-.ac_results {
+.ui-menu {
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f8f8f8), to(#f0f0f0));
   background: -moz-linear-gradient(top, #f8f8f8 0%, #f0f0f0 100%);
+  list-style-type: none;
   width: 868px !important;
+  box-shadow: 2px 0 3px #aaa, 0 2px 3px #aaa, -2px 0 3px #aaa;
+  -webkit-box-shadow: 2px 0 3px #aaa, 0 2px 3px #aaa, -2px 0 3px #aaa;
+  -moz-box-shadow: 2px 0 3px #aaa, 0 2px 3px #aaa, -2px 0 3px #aaa;
 }
 
-.ac_results .ac_over {
-  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#BCD7E1), to(#87B1C0), color-stop(.5,#B5D2DC));
-  background: -moz-linear-gradient(top, #BCD7E1 0%, #B5D2DC 50%, #87B1C0 100%);
-}
-
-.ac_results li {
+.ui-menu-item a {
   padding-left: 10px;
   padding-right: 6px;
+  display: block;
+}
+
+#ui-active-menuitem {
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#BCD7E1), to(#87B1C0), color-stop(.5,#B5D2DC));
+  background: -moz-linear-gradient(top, #BCD7E1 0%, #B5D2DC 50%, #87B1C0 100%);
 }
 
 #results {

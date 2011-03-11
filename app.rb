@@ -200,11 +200,11 @@ Cuba.define do
     end
   end
 
-  on get, path("streets.txt"), param("q") do |search|
+  on get, path("streets.json"), param("term") do |search|
     street = Geocoder::Address.parse(search).street
     comparer = Geocoder::StreetComparer.new(street)
 
-    res["Content-Type"] = "text/plain"
-    res.write comparer.matches.join("\n")
+    res["Content-Type"] = "application/json"
+    res.write JSON.dump(comparer.matches)
   end
 end

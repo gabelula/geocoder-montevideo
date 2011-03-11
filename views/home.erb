@@ -98,10 +98,14 @@
     </footer>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
-    <script src="/js/jquery.autocomplete.js"></script>
+    <script src="/js/jquery-ui.autocomplete.js"></script>
     <script>
       jQuery(function($) {
-        $("#address").autocomplete("/streets.txt");
+        $("#address").autocomplete({
+          source:    "/streets.json",
+          minLength: 2,
+          delay:     200
+        });
 
         var apiDocs = $("#api-docs h2 + *").hide();
         $("#api-docs h2").css({ cursor: "pointer", textDecoration: "underline" }).click(function() {
