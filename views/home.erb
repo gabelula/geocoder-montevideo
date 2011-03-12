@@ -15,8 +15,6 @@
 
     <section id="search">
       <form action="/geocode" method="get">
-        <input type="hidden" name="snowman" value="☃">
-
         <p><label for="address">Busca una dirección en Montevideo:</label></p>
         <p>
           <input autofocus autocomplete="off" type="text" name="address" id="address" value="<%= address %>">
@@ -114,21 +112,48 @@
     </footer>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+    <script src="/js/history.adapter.jquery.js"></script>
+    <script src="/js/history.js"></script>
     <script src="/js/jquery-ui.autocomplete.js"></script>
     <script>
       jQuery(function($) {
-        var address = $("#address");
+        var searchForm = $("#search form"),
+            address = $("#address", searchForm);
 
         address.autocomplete({
           source:    "/streets.json",
           minLength: 2,
           delay:     200
         });
-        address.ajaxStart(function() { $(this).addClass("loading") });
-        address.ajaxStop(function() { $(this).removeClass("loading") });
 
-        $("#search form").submit(function() {
-          address.addClass("loading");
+        $(document).ajaxStart(function() { address.addClass("loading") });
+        $(document).ajaxStop(function() { address.removeClass("loading") });
+
+        $(window).bind("statechange", function() {
+          var state = History.getState();
+          load(state.url, false);
+        });
+
+        function load(url, push) {
+          if (push === true || push === undefined)
+            History.pushState(null, null, url);
+
+          $.ajax({
+            url:      url,
+            dataType: "script html"
+          }).success(function(response) {
+            $("#results").html(response);
+          });
+        }
+
+        searchForm.submit(function() {
+          load(this.action + "?" + searchForm.serialize());
+          return false;
+        });
+
+        $("#multiple-choices a").live("click", function() {
+          load(this.href);
+          return false;
         });
 
         var apiDocs = $("#api-docs h2 + *").hide();

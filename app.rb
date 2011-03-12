@@ -278,6 +278,11 @@ Cuba.define do
       end
     end
 
+    on accept("text/javascript") do
+      res["Content-Type"] = "text/html"
+      res.write render("views/results.erb", results: result_set, address: address)
+    end
+
     on default do
       res.write render("views/home.erb", results: result_set, address: address)
     end
