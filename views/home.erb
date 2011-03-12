@@ -26,30 +26,7 @@
     </section>
 
     <section id="results">
-      <% if results.exact_match? %>
-        <dl>
-          <dt>Latitud:</dt>
-          <dd><%= results.latitude %>&deg;N</dd>
-          <dt>Longitud:</dt>
-          <dd><%= results.longitude %>&deg;E</dd>
-        </dl>
-
-        <img id="static-map" class="map"
-          src="<%= Geocoder.map(results.latitude, results.longitude, "977x272") %>"
-          data-latitude="<%= results.latitude %>"
-          data-longitude="<%= results.longitude %>"
-          data-address="<%= address %>"
-          alt="Map for <%= address %>">
-      <% elsif results.any? %>
-        <p class="error">Múltiples resultados para "<%= address %>"</p>
-        <ul id="multiple-choices">
-          <% results.expanded.each do |result| %>
-            <li><%= link result.address, address_url(result) %></li>
-          <% end %>
-        </ul>
-      <% elsif address && address.size > 0 %>
-        <p class="error">No encontramos la dirección "<%= address %>".</p>
-      <% end %>
+      <%= render "views/results.erb", results: results, address: address %>
     </section>
 
     <section id="api-docs">
