@@ -147,6 +147,7 @@
         }
 
         searchForm.submit(function() {
+          address.autocomplete("close");
           load(this.action + "?" + searchForm.serialize());
           return false;
         });
