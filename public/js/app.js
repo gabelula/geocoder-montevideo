@@ -86,6 +86,9 @@ jQuery(function($) {
 
                 response(results);
             });
+        },
+        open: function(eveent, ui) {
+            $(".ui-menu").css({ zIndex: 3000000 }); // WTF, CloudMade.
         }
     });
 
