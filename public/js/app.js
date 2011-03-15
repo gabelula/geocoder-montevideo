@@ -45,13 +45,52 @@ jQuery(function($) {
         });
     }
 
+    function Address(street, house) {
+        this.street = street;
+        this.house  = house;
+
+        this.toString = function() {
+            return this.street + " " + this.house;
+        }
+    }
+
+    Address.parse = function(str) {
+        var rev = function(s) { return String(s).split("").reverse().join("") }
+        var matches = rev(str).match(/^(?:((?:sib|[ab]p|[a-d])?\s*\d+)?\s+)?(.+)$/);
+        return new Address(rev(matches[2]), rev(matches[1]));
+    }
+
+    window.Address = Address;
+
     var searchForm = $("#search form"),
         address = $("#address", searchForm);
 
     address.autocomplete({
-        source:    "/streets.json",
         minLength: 2,
-        delay:     200
+        delay:     200,
+        source:    function(request, response) {
+            var address = Address.parse(request.term),
+                req = $.ajax({
+                    url:      "/streets.json",
+                    dataType: "json",
+                    data:     { term: address.street }
+                });
+
+            req.success(function(data) {
+                var results = $.map(data, function(street) {
+                    return {
+                        label: street,
+                        value: new Address(street, address.house).toString()
+                    }
+                });
+
+                response(results);
+            });
+        }
+    });
+
+    address.blur(function() {
+        address.autocomplete("close");
     });
 
     $(document).ajaxStart(function() { address.addClass("loading") });
