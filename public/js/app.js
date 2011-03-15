@@ -64,7 +64,7 @@ jQuery(function($) {
 
     function load(url, push) {
         if (push === true || push === undefined)
-        History.pushState(null, null, url);
+            History.pushState(null, null, url);
 
         $.ajax({
             url:      url,
