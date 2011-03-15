@@ -187,7 +187,11 @@ module Geocoder
     def coords
       @coords ||= begin
         raw = data ? data["features"] : []
+
         raw.map do |feature|
+          # Skip non-addresses (matching "road", "city", etc entries)
+          next unless is_address?(feature)
+
           addresses = feature["properties"].fetch("addr:housenumber").split(",").map do |house|
             Address.new(feature["properties"]["addr:street"], house)
           end
@@ -197,8 +201,18 @@ module Geocoder
             feature["centroid"]["coordinates"].last,
             addresses
           )
-        end
+        end.compact
       end
+    end
+
+    private
+
+    def is_address?(feature)
+      props = feature.fetch("properties")
+      props.fetch("osm_element") == "node" &&
+        props.fetch("place", nil) != "city"
+    rescue KeyError
+      false
     end
   end
 
