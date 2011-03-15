@@ -1,4 +1,3 @@
-require "cgi"
 require "cuba"
 require "json"
 require "open-uri"
@@ -38,7 +37,7 @@ module Geocoder
     MARKER = "http://tile.cloudmade.com/wml/0.2/images/marker.png"
 
     def center
-      CGI.escape("#{latitude},#{longitude}")
+      URI.escape("#{latitude},#{longitude}")
     end
 
     def size
@@ -53,7 +52,7 @@ module Geocoder
     end
 
     def marker
-      CGI.escape("url:#{MARKER}|#{latitude},#{longitude}")
+      URI.escape("url:#{MARKER}|#{latitude},#{longitude}")
     end
 
     def to_uri
@@ -93,7 +92,7 @@ module Geocoder
     end
 
     def to_uri
-      CGI.escape([street  && "street:#{street}",
+      URI.escape([street  && "street:#{street}",
                   house   && "house:#{house}",
                   city    && "city:#{city}",
                   country && "country:#{country}"].compact.join(";"))
@@ -241,9 +240,9 @@ class Cuba::Ron
 
   def address_url(coord)
     "/geocode?" + [
-      "address=#{CGI.escape(coord.address.to_s)}",
-      "lat=#{CGI.escape(coord.latitude.to_s)}",
-      "lng=#{CGI.escape(coord.longitude.to_s)}"
+      "address=#{URI.escape(coord.address.to_s)}",
+      "lat=#{URI.escape(coord.latitude.to_s)}",
+      "lng=#{URI.escape(coord.longitude.to_s)}"
     ].join("&").force_encoding("ASCII-8BIT")
   end
 end
