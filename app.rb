@@ -75,7 +75,7 @@ module Geocoder
     def self.parse(address)
       # we revert it and revert it back so we can safely extract the
       # house number first, and then everything else is the street name
-      address.reverse =~ /^(?:((?:sib|[ab]p|[a-d])?\s*\d+)?\s+)?(.+)$/
+      address.to_s.reverse =~ /^(?:((?:sib|[ab]p|[a-d])?\s*\d+)?\s+)?(.+)$/
       street, number = [$2 && $2.reverse, $1 && $1.reverse]
 
       new(street, number)
