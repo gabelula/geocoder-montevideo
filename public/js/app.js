@@ -57,14 +57,13 @@ jQuery(function($) {
     $(document).ajaxStart(function() { address.addClass("loading") });
     $(document).ajaxStop(function() { address.removeClass("loading") });
 
-    $(window).bind("statechange", function() {
-        var state = History.getState();
-        load(state.url, false);
-    });
+    window.onpopstate = function(event) {
+        event.state && load(event.state.url, false);
+    };
 
     function load(url, push) {
         if (push === true || push === undefined)
-            History.pushState(null, null, url);
+            history.pushState({}, "", url);
 
         $.ajax({
             url:      url,
