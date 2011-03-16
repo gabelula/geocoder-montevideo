@@ -60,8 +60,6 @@ jQuery(function($) {
         return new Address(rev(matches[2]), rev(matches[1]));
     }
 
-    window.Address = Address;
-
     var searchForm = $("#search form"),
         address = $("#address", searchForm);
 
